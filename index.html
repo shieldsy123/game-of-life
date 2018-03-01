@@ -1,44 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title>Hello</title>
-  <link href="style.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Hello</title>
+    <link href="style.css" rel="stylesheet">
 </head>
-
 <body>
-  <h2>Game of life</h2>
+    <h2>Game of life</h2>
 
-  <form>
-    <div class="">
-      <button id="dump-config-btn">Dump config</button>
-      <span>Show current config on console</span>
-    </div>
-    <div>
-      <button id="clear-btn">Clear</button>
-      <span>Torch it</span>
-    </div>
+    <table id="ui-grid"></table>
 
-    <div>
-      <button id='one-tick-btn'>One Tick</button>
-      <span>One generation step</span>
-    </div>
+    <form>
+      <h3>Controls</h3>
 
-    <div>
-      <button id='start-tick-btn'>Start Ticking</button>
-      <span>Start automatically advancing generations</span>
-    </div>
+      <div>
+        <button id="dump-config-btn">Dump config</button>
+        <span>Show current config on console.</span>
+      </div>
 
-    <div>
-      <button id='stop-tick-btn'>Stop Ticking</button>
-      <span>Stop automatically advancing generations</span>
-    </div>
+      <div>
+        <button id="clear-btn">Clear</button>
+        <span>Torch it</span>
+      </div>
 
-  </form>
+      <div>
+        <button id="one-tick-btn">One Tick</button>
+        <span>One generation step</span>
+      </div>
 
-  <script src="node_modules/jquery/dist/jquery.min.js"></script>
-  <script src="app.js"></script>
+      <div>
+        <button id="start-tick-btn">Start Ticking</button>
+        <span>Start automatically advancing gernations</span>
+      </div>
+
+      <div>
+        <button id="stop-tick-btn">Stop Ticking</button>
+        <span>Stop automatically advancing gernations</span>
+      </div>
+    </form>
+
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="app.js"></script>
 </body>
-
 </html>
