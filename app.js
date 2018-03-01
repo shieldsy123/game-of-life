@@ -2,6 +2,9 @@ $(document).ready(function () {
   const maxRows = 20
   const maxCols = 20
 
+  // GRID DATA STORAGE
+  let activeCells = {}
+
   // SET INITIAL UI STATE
   $('#stop-tick-btn').attr('disabled', true)
 
@@ -20,11 +23,30 @@ $(document).ready(function () {
       const row = $('<tr>')
       for (let j = 0; j < maxCols; j++) {
         const cell = $('<td>')
+        const rowColString = `${i},${j}`
+        cell.attr('data-row-col', rowColString)
+        cell.click(uiGridCellClick)
         row.append(cell)
       }
       $('#ui-grid').append(row)
     }
   }
+
+  // CELL EVENT HANDLERS
+  function uiGridCellClick(event) {
+    event.preventDefault()
+    const rowColString = $(this).attr('data-row-col')
+    $(this).toggleClass('on')
+
+    if ($(this).hasClass('on')) {
+      activeCells[rowColString] = true
+    } else {
+      delete activeCells[rowColString]
+    }
+    console.log('uiGridCellClick() ${rowColString}');
+  }
+
+
 
   // BUTTON EVENT HANDLERS
   function stopTickBtnClick(event) {
@@ -36,13 +58,10 @@ $(document).ready(function () {
     $('#start-tick-btn').removeAttr('disabled')
 
     $('#stop-tick-btn').attr('disabled', true)
-
-    console.log('stopBtnClick()')
   }
 
   function oneTickBtnClick(event) {
     event.preventDefault()
-    console.log('oneTickBtnClick()')
   }
 
   function startTickBtnClick(event) {
@@ -54,17 +73,27 @@ $(document).ready(function () {
     $('#start-tick-btn').attr('disabled', true)
 
     $('#stop-tick-btn').removeAttr('disabled')
-
-    console.log('startTickBtnClick()')
   }
 
   function clearBtnClick(event) {
     event.preventDefault()
-    console.log('clearBtnClick()')
+    $('td').removeClass('on')
+    activeCells = {}
+    console.log('clearBtnClick()');
   }
 
   function dumpConfigBtnClick(event) {
     event.preventDefault()
+    console.log(activeCells);
     console.log('dumpConfigBtnClick()')
   }
+
+// XXX: Debugger Tools
+// console.log() text
+// unexpected token, line number
+// element inspector
+// debugger keyword
+// variable navigation
+// timeouts interval
+// console.log() array or object
 })
