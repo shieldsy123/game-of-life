@@ -1,9 +1,16 @@
-$(document).ready(function () {
+$(document).ready(function() {
+  // GRID DIMENSIONS
   const maxRows = 20
   const maxCols = 20
 
   // GRID DATA STORAGE
   let activeCells = {}
+
+  // INTERVAL TIMER ID
+  let intervalID = null
+
+  // INTERVAL PERIOD
+  const intervalPeriodMS = 1000
 
   // SET INITIAL UI STATE
   $('#stop-tick-btn').attr('disabled', true)
@@ -32,6 +39,76 @@ $(document).ready(function () {
     }
   }
 
+  function populateUIGrid() {
+    $('td').removeClass('on')
+    Object.keys(activeCells).forEach((p) => {
+      $(`td[data-row-col="${p}"]`).addClass('on')
+    })
+  }
+
+  // SIMULATION FUNCTIONS
+  function oneTick() {
+    // THE NEW GENERATION OF CELLS
+    const nextTickActiveCells = {}
+
+    // LIVE CELLS
+    for (rowColString of Object.keys(activeCells)) {
+      const n = countNeighbors(rowColString)
+      if (n === 2 || n === 3) {
+        nextTickActiveCells[rowColString] = true
+      }
+    }
+
+    // DEAD CELLS
+    for (let i = 0; i < maxRows; i++) {
+      for (let j = 0; j < maxCols; j++) {
+        const rowColString = `${i},${j}`
+        if (!(rowColString in activeCells) && countNeighbors(rowColString) === 3) {
+          nextTickActiveCells[rowColString] = true
+        }
+      }
+    }
+
+    // POPULATE NEXT
+    activeCells = nextTickActiveCells
+    populateUIGrid()
+  }
+
+  function countNeighbors(rowColString) {
+    let neighborCount = 0
+    const n = neighborhood(rowColString)
+    for (let k = 0; k < n.length; k++) {
+      if (n[k] in activeCells) {
+        neighborCount++
+      }
+    }
+    return neighborCount
+  }
+
+  function neighborhood(rowColString) {
+    const center = rowColString.split('').map((x) => +x)
+    const row = center[0]
+    const col = center[i]
+
+    const upRow = row > 0 ? row - 1 : maxRows - 1
+    const downRow = row < maxRows - 1 ? row + 1 : 0
+    const leftCol = col > 0 ? col - 1 : maxCols - 1
+    const rightCol = col < maxCols - 1 ? col + 1 : 0
+
+    const north = [upRow, col]
+    const south = [downRow, col]
+    const east = [row, rightCol]
+    const west = [row, leftCol]
+    const northWest = [upRow, leftCol]
+    const southWest = [downRow, leftCol]
+    const northEast = [downRow, rightCol]
+    const southEast = [upRow, rightCol]
+
+    const directions = [north, south, east, west, northWest, southWest, northEast, southEast]
+
+    return directions.map((p) => `${p[0]},${p[1]}`)
+  }
+
   // CELL EVENT HANDLERS
   function uiGridCellClick(event) {
     event.preventDefault()
@@ -46,8 +123,6 @@ $(document).ready(function () {
     console.log('uiGridCellClick() ${rowColString}');
   }
 
-
-
   // BUTTON EVENT HANDLERS
   function stopTickBtnClick(event) {
     event.preventDefault()
@@ -58,10 +133,14 @@ $(document).ready(function () {
     $('#start-tick-btn').removeAttr('disabled')
 
     $('#stop-tick-btn').attr('disabled', true)
+
+    clearInterval(intervalID)
   }
 
   function oneTickBtnClick(event) {
     event.preventDefault()
+    oneTick()
+    console.log('oneTickBtnClick()');
   }
 
   function startTickBtnClick(event) {
@@ -73,6 +152,8 @@ $(document).ready(function () {
     $('#start-tick-btn').attr('disabled', true)
 
     $('#stop-tick-btn').removeAttr('disabled')
+
+    intervalID = setInterval(oneTick, intervalPeriodMS)
   }
 
   function clearBtnClick(event) {
@@ -88,12 +169,12 @@ $(document).ready(function () {
     console.log('dumpConfigBtnClick()')
   }
 
-// XXX: Debugger Tools
-// console.log() text
-// unexpected token, line number
-// element inspector
-// debugger keyword
-// variable navigation
-// timeouts interval
-// console.log() array or object
+  // XXX: Debugger Tools
+  // console.log() text
+  // unexpected token, line number
+  // element inspector
+  // debugger keyword
+  // variable navigation
+  // timeouts interval
+  // console.log() array or object
 })
